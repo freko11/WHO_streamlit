@@ -23,8 +23,8 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 st.title("WHO Life expectancy dashboard")
 
-# Load data
-@st.cache_data
+
+@st.experimental_memo
 def load_data():
     df = pd.read_csv('Life Expectancy Data.csv')
     df.columns = ['Country', 'Year', 'Status', 'Life expectancy', 'Adult Mortality',
@@ -38,22 +38,22 @@ def load_data():
 
 df = load_data()
 
-# Sidebar filters
+
 sidebar = st.sidebar
 countries = df["Country"].unique()
 selected_country = sidebar.selectbox("Select a country", countries)
 years = df["Year"].unique()
 selected_year = sidebar.slider("Select a year", min_value=int(2000), max_value=int(2015), value=int(2015))
 
-# Filter data based on selected filters
+
 filtered_df = df[(df["Country"] == selected_country) & (df["Year"] == selected_year)]
 
-# Display selected data in table
+
 st.write(f"## {selected_country} Life Expectancy Data ({selected_year})")
 st.write(filtered_df)
 
 
-# Line chart showing life expectancy trend by country and year
+
 st.write(f"## Life Expectancy Trends by Country and Year")
 fig1 = px.line(df[df["Country"] == selected_country], x="Year", y="Life expectancy", color="Status")
 fig1.update_layout(title=f"Life Expectancy Trend in {selected_country}", xaxis_title="Year",
